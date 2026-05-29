@@ -199,7 +199,7 @@ Each metric used a 1–3 scoring scale.
 ├── app.py
 ├── rag_pipeline.py
 ├── requirements.txt
-├── .env
+├── .env.example        
 ├── .gitignore
 ├── notebooks/
 │   ├── task1_eda_preprocessing.ipynb
@@ -224,8 +224,8 @@ Each metric used a 1–3 scoring scale.
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/ruhamds/https://github.com/ruhamds/credit-trust-complaint-bot.git
-cd YOUR_REPO
+git clone https://github.com/ruhamds/credit-trust-complaint-bot.git
+cd ruhamds/credit-trust-complaint-bot
 ```
 
 ### 2. Install Dependencies
