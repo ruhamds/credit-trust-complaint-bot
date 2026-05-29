@@ -1,13 +1,11 @@
 ````md
-# CrediTrust Financial — Complaint Intelligence Platform
+# 🛡️ CreditTrust Financial — Complaint Intelligence Platform
 
-**An intelligent RAG system** that turns 9.6 million real-world consumer complaints into **actionable insights** for Product, Support, and Compliance teams.
+**AI-Powered Complaint Intelligence System**
+
+An end-to-end **Retrieval-Augmented Generation (RAG)** platform that transforms **9.6 million real-world consumer complaints** into clear, actionable insights for Product, Support, and Compliance teams.
 
 Built with **ChromaDB • Groq (Llama 3.1) • Streamlit**
-
----
-
-An end-to-end Retrieval-Augmented Generation (RAG) platform for analysing CFPB consumer complaints using semantic search, vector databases, and LLM-powered summarisation.
 
 The system processes over 9.6 million real-world consumer complaints and enables grounded question-answering across multiple financial product categories using ChromaDB, Sentence Transformers, and Llama 3.1.
 
