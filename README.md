@@ -1,4 +1,3 @@
-````md
 ### CreditTrust Financial — Complaint Intelligence Platform
 
 ### **AI-Powered RAG System for Customer Complaint Analysis**
