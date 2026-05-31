@@ -105,33 +105,49 @@ def _get_embedder(model_name: str = DEFAULT_EMBEDDING_MODEL) -> SentenceTransfor
 
 
 def _get_collection(
-    vectorstore_dir: str  = None,
-    collection_name: str  = DEFAULT_COLLECTION_NAME
+    vectorstore_dir: str = None,
+    collection_name: str = DEFAULT_COLLECTION_NAME
 ) -> chromadb.Collection:
-    """Return the ChromaDB collection, connecting once and caching."""
+    """Return the ChromaDB collection with flexible path detection."""
     global _collection
-    if _collection is None:
-        if vectorstore_dir is None:
-            # Default: data/vectorstore/ relative to this file's location
-            vectorstore_dir = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                'data', 'vectorstore'
-            )
-        if not os.path.exists(vectorstore_dir):
-            raise FileNotFoundError(
-                f'Vector store not found at: {vectorstore_dir}\n'
-                f'Run Task 2 notebook to build the vector store first.'
-            )
-        logger.info(f'Connecting to ChromaDB at: {vectorstore_dir}')
-        client      = chromadb.PersistentClient(
-            path     = vectorstore_dir,
-            settings = Settings(anonymized_telemetry=False)
-        )
-        _collection = client.get_collection(collection_name)
-        logger.info(f'Collection loaded: {_collection.count():,} chunks')
-    return _collection
+    if _collection is not None:
+        return _collection
 
+    # Try multiple possible paths (works both locally and on Streamlit Cloud)
+    possible_paths = []
 
+    if vectorstore_dir:
+        possible_paths.append(vectorstore_dir)
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    possible_paths.extend([
+        os.path.join(base_dir, 'data', 'vectorstore'),                    # Standard
+        os.path.join(base_dir, '..', 'data', 'vectorstore'),             # One level up
+        os.path.join(base_dir, 'Notebooks', 'data', 'vectorstore'),      # Your current structure
+        os.path.join(base_dir, '..', 'Notebooks', 'data', 'vectorstore'), # Another possibility
+    ])
+
+    for path in possible_paths:
+        if os.path.exists(path) and os.listdir(path):
+            try:
+                logger.info(f"Found vector store at: {path}")
+                client = chromadb.PersistentClient(
+                    path=path,
+                    settings=Settings(anonymized_telemetry=False)
+                )
+                _collection = client.get_collection(collection_name)
+                logger.info(f"Collection loaded successfully: {_collection.count():,} chunks")
+                return _collection
+            except Exception as e:
+                logger.warning(f"Failed to load from {path}: {e}")
+
+    # If no path worked
+    raise FileNotFoundError(
+        f"Vector store not found.\n"
+        f"Searched in:\n" + "\n".join(possible_paths) + 
+        f"\n\nPlease make sure the vectorstore folder is uploaded to the repository."
+    )
 def _get_groq_client() -> Groq:
     """Return the Groq client, initialising once and caching."""
     global _groq_client
